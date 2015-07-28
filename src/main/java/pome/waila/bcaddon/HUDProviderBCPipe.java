@@ -7,6 +7,7 @@ import buildcraft.transport.TileGenericPipe;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
+import mcp.mobius.waila.api.SpecialChars;
 import mcp.mobius.waila.utils.ModIdentification;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -39,7 +40,7 @@ public class HUDProviderBCPipe implements IWailaDataProvider
 		if(tile instanceof TileGenericPipe)
 		{
 			Item pipeItem = ((TileGenericPipe)tile).pipe.item;//パイプのアイテム取得
-			defaulttip.add(new ItemStack(pipeItem).getDisplayName());
+			defaulttip.add( SpecialChars.WHITE + (new ItemStack(pipeItem).getDisplayName()));
 		}
 		return defaulttip;
 	}

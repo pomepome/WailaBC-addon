@@ -1,24 +1,24 @@
-package pome.waila.bcaddon;
+package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.BCAssemblyTableModule.*;
 import static pome.waila.bcaddon.WailaAddonBC.*;
+import static pome.waila.bcaddon.modules.BCAdvancedCraftingTableModule.*;
 
 import java.util.List;
 
-import buildcraft.api.recipes.IFlexibleRecipe;
-import buildcraft.silicon.TileAssemblyTable;
+import buildcraft.silicon.TileAdvancedCraftingTable;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-public class HUDProviderAssemblyTable implements IWailaDataProvider
-{
+public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
+
 	long lastMillisec;
 	int lastEnergy;
 
@@ -39,18 +39,18 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 	public List<String> getWailaBody(ItemStack stack, List<String> defaulttip, IWailaDataAccessor accessor,IWailaConfigHandler config)
 	{
 		TileEntity tile = accessor.getTileEntity();
-		if(tile instanceof TileAssemblyTable)
+		if(tile instanceof TileAdvancedCraftingTable)
 		{
-			TileAssemblyTable table = (TileAssemblyTable)tile;
+			TileAdvancedCraftingTable table = (TileAdvancedCraftingTable)tile;
 			NBTTagCompound tag = accessor.getNBTData();
 			if(tag.hasKey("content"))
 			{
 				ItemStack result = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
-				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + result.getDisplayName());
+				defaulttip.add( EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + result.getDisplayName());
 			}
 			else
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + "NULL");
+				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET +"NULL");
 			}
 			if(tag.getBoolean("canCraft"))
 			{
@@ -68,9 +68,9 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 
 	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound nbt, World world, int x,int y, int z)
 	{
-		if(tile instanceof TileAssemblyTable)
+		if(tile instanceof TileAdvancedCraftingTable)
 		{
-			TileAssemblyTable table = (TileAssemblyTable)tile;
+			TileAdvancedCraftingTable table = (TileAdvancedCraftingTable)tile;
 
 			double estTime = predictRemTime(table);
 			nbt.setDouble("estTime", estTime);
@@ -80,19 +80,20 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 
 			removeTag(nbt,"content");
 
-			IFlexibleRecipe<ItemStack> current = getFieldValue(currentRecipe, table);
+			IRecipe current = getFieldValue(currentRecipe, table);
 			if(current != null)
 			{
-				ItemStack stack = current.craft(table, false).crafted;
+				ItemStack output = current.getRecipeOutput().copy();
 
 				NBTTagCompound subNBT = new NBTTagCompound();
-				stack.writeToNBT(subNBT);
+				output.writeToNBT(subNBT);
+
 				nbt.setTag("content", subNBT);
 			}
 		}
 		return nbt;
 	}
-	public double predictRemTime(TileAssemblyTable table)
+	public double predictRemTime(TileAdvancedCraftingTable table)
 	{
 		try
 		{

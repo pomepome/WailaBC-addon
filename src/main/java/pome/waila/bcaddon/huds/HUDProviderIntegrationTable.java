@@ -1,7 +1,7 @@
-package pome.waila.bcaddon;
+package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.BCIntegrationTableModule.*;
 import static pome.waila.bcaddon.WailaAddonBC.*;
+import static pome.waila.bcaddon.modules.BCIntegrationTableModule.*;
 
 import java.util.List;
 import java.util.Set;

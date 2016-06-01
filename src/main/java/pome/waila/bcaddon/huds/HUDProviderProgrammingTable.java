@@ -1,7 +1,7 @@
-package pome.waila.bcaddon;
+package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.BCProgrammingTableModule.*;
 import static pome.waila.bcaddon.WailaAddonBC.*;
+import static pome.waila.bcaddon.modules.BCProgrammingTableModule.*;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import pome.waila.bcaddon.WailaAddonBC;
 
 public class HUDProviderProgrammingTable implements IWailaDataProvider
 {

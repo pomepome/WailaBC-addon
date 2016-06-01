@@ -15,6 +15,12 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
+import pome.waila.bcaddon.modules.BCAdvancedCraftingTableModule;
+import pome.waila.bcaddon.modules.BCAssemblyTableModule;
+import pome.waila.bcaddon.modules.BCAutoWorkbenchModule;
+import pome.waila.bcaddon.modules.BCIntegrationTableModule;
+import pome.waila.bcaddon.modules.BCProgrammingTableModule;
+import pome.waila.bcaddon.modules.BCTransportModule;
 
 @Mod(modid="WailaAddonBC",name="WailaAddonBC",version = "1.0.1",dependencies = "required-after:Waila;required-after:BuildCraft|Transport@[7.0.3,);required-after:BuildCraft|Silicon@[7.0.3,)")
 public class WailaAddonBC

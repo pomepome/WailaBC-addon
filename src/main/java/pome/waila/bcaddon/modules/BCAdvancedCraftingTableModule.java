@@ -1,10 +1,12 @@
-package pome.waila.bcaddon;
+package pome.waila.bcaddon.modules;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
+import pome.waila.bcaddon.WailaAddonBC;
+import pome.waila.bcaddon.huds.HUDProviderAdvancedCraftingTable;
 
 public class BCAdvancedCraftingTableModule
 {

@@ -1,6 +1,8 @@
-package pome.waila.bcaddon;
+package pome.waila.bcaddon.modules;
 
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
+import pome.waila.bcaddon.WailaAddonBC;
+import pome.waila.bcaddon.huds.HUDProviderBCPipe;
 
 public class BCTransportModule
 {

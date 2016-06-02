@@ -13,8 +13,10 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
+import pome.waila.bcaddon.debugger.CommandDebug;
 import pome.waila.bcaddon.modules.BCAdvancedCraftingTableModule;
 import pome.waila.bcaddon.modules.BCAssemblyTableModule;
 import pome.waila.bcaddon.modules.BCAutoWorkbenchModule;
@@ -54,6 +56,13 @@ public class WailaAddonBC
 		}
 		config.save();
 	}
+
+	@EventHandler
+	public void serverLoad(FMLServerStartingEvent e)
+	{
+		e.registerServerCommand(new CommandDebug());
+	}
+
 	public static <T> T getFieldValue(Field f,Object obj)
 	{
 		try

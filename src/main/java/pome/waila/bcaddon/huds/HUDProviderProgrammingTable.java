@@ -95,7 +95,7 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			{
 				int optionIndex = getFieldValue(optionId, table);
 
-				if(optionIndex > 0)
+				if(optionIndex > -1)
 				{
 
 					List<ItemStack> ops = getFieldValue(options,table);

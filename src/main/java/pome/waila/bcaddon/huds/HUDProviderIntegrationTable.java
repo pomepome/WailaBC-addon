@@ -124,14 +124,22 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 						RedstoneBoardRegistry reg = getFieldValue(INSTANCE, null);
 						RedstoneBoardRobotNBT rbNBT = Invoke(getRobotNBT, null, tag);
 
-						if(rbNBT != null && rbNBT instanceof BCBoardNBT)
+						if(rbNBT != null)
 						{
-							BCBoardNBT rbrNBT = (BCBoardNBT)rbNBT;
-							String uName = getFieldValue(upperName, rbrNBT);
+							if(rbNBT instanceof BCBoardNBT)
+							{
+								BCBoardNBT rbrNBT = (BCBoardNBT)rbNBT;
+								String uName = getFieldValue(upperName, rbrNBT);
 
-							String localized = StringUtils.localize(new StringBuilder().append("buildcraft.boardRobot").append(uName).toString());
+								String localized = StringUtils.localize(new StringBuilder().append("buildcraft.boardRobot").append(uName).toString());
 
-							nbt.setString("type", localized);
+								nbt.setString("type", localized);
+							}
+							else
+							{
+								String localized = StringUtils.localize(rbNBT.getID().replace(":", "."));
+								nbt.setString("type", localized);
+							}
 						}
 					}
 					else if(output.getItem() instanceof ItemGate)

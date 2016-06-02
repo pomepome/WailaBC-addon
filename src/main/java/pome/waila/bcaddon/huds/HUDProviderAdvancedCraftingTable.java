@@ -52,6 +52,10 @@ public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
 			{
 				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET +"NULL");
 			}
+			if(tag.hasKey("type"))
+			{
+				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + tag.getString("type"));
+			}
 			if(tag.getBoolean("canCraft"))
 			{
 				defaulttip.add(EnumChatFormatting.BLUE + "est. time: " + EnumChatFormatting.RESET + formatTime(tag.getDouble("estTime")));
@@ -79,6 +83,7 @@ public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
 			nbt.setBoolean("canCraft", canCrafting);
 
 			removeTag(nbt,"content");
+			removeTag(nbt,"type");
 
 			IRecipe current = getFieldValue(currentRecipe, table);
 			if(current != null)
@@ -89,6 +94,12 @@ public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
 				output.writeToNBT(subNBT);
 
 				nbt.setTag("content", subNBT);
+
+				String type = getRedstoneBoardName(output);
+				if(type != "UNKNOWN")
+				{
+					nbt.setString("type", type);
+				}
 			}
 		}
 		return nbt;

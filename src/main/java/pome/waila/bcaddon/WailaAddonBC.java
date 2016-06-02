@@ -5,24 +5,27 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import buildcraft.api.boards.RedstoneBoardNBT;
+import buildcraft.api.boards.RedstoneBoardRegistry;
+import buildcraft.robotics.ItemRedstoneBoard;
+import buildcraft.robotics.ItemRobot;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import pome.waila.bcaddon.debugger.CommandDebug;
-import pome.waila.bcaddon.modules.BCAdvancedCraftingTableModule;
-import pome.waila.bcaddon.modules.BCAssemblyTableModule;
-import pome.waila.bcaddon.modules.BCAutoWorkbenchModule;
-import pome.waila.bcaddon.modules.BCIntegrationTableModule;
-import pome.waila.bcaddon.modules.BCProgrammingTableModule;
-import pome.waila.bcaddon.modules.BCTransportModule;
+import pome.waila.bcaddon.ploxies.CommonProxy;
 
 @Mod(modid="WailaAddonBC",name="WailaAddonBC",version = "1.0.1",dependencies = "required-after:Waila;required-after:BuildCraft|Transport@[7.0.3,);required-after:BuildCraft|Silicon@[7.0.3,)")
 public class WailaAddonBC
@@ -32,6 +35,9 @@ public class WailaAddonBC
 	private File confFile;
 
 	public static Logger log = LogManager.getLogger("WailaAddonBC");
+
+	@SidedProxy(serverSide="pome.waila.bcaddon.ploxies.CommonProxy",clientSide="pome.waila.bcaddon.ploxies.ClientProxy")
+	public static CommonProxy proxy;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -47,12 +53,7 @@ public class WailaAddonBC
 		enabled = config.getBoolean("enabled", "general", true, "Is the mod enabled?");
 		if(enabled)
 		{
-			BCTransportModule.register();
-			BCAssemblyTableModule.register();
-			BCAdvancedCraftingTableModule.register();
-			BCProgrammingTableModule.register();
-			BCIntegrationTableModule.register();
-			BCAutoWorkbenchModule.register();
+			proxy.registerHUDModules();
 		}
 		config.save();
 	}
@@ -117,5 +118,32 @@ public class WailaAddonBC
 		{
 			nbt.removeTag(tag);
 		}
+	}
+	public static String getRedstoneBoardName(ItemStack stack)
+	{
+		if(stack == null || !stack.hasTagCompound() || !(stack.getItem() instanceof ItemRobot || stack.getItem() instanceof ItemRedstoneBoard))
+		{
+			return "UNKNOWN";
+		}
+		RedstoneBoardNBT rbNBT = RedstoneBoardRegistry.instance.getRedstoneBoard(stack.stackTagCompound);
+		if(rbNBT == null)
+		{
+			return "UNKNOWN";
+		}
+		if(rbNBT.getID() == RedstoneBoardRegistry.instance.getEmptyRobotBoard().getID())
+		{
+			return "empty";
+		}
+		if(stack.getItem() instanceof ItemRobot)
+		{
+			return getBCBNBT(stack,ItemRobot.getRobotNBT(stack));
+		}
+		return getBCBNBT(stack, rbNBT);
+	}
+	public static String getBCBNBT(ItemStack stack,RedstoneBoardNBT bcbn)
+	{
+		List<String> list = new ArrayList<String>();
+		bcbn.addInformation(stack, null, list, false);
+		return list.get(0);
 	}
 }

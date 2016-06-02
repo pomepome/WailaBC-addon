@@ -14,8 +14,6 @@ public class BCProgrammingTableModule
 {
 	public static Class programmingTableClass;
 	public static Class laserBaseClass;
-	public static Class redstoneBoardRegistry;
-	public static Class bCBoardNBT;
 
 	public static Method getRequiredEnergy;
 	public static Method getEnergy;
@@ -26,19 +24,13 @@ public class BCProgrammingTableModule
 	public static Field currentRecipe;
 	public static Field optionId;
 	public static Field options;
-	public static Field INSTANCE;
-	public static Field upperName;
 
 	public static void register()
 	{
 		try
 		{
-			debug();
 			programmingTableClass = Class.forName("buildcraft.silicon.TileProgrammingTable");
 			laserBaseClass = Class.forName("buildcraft.silicon.TileLaserTableBase");
-			redstoneBoardRegistry = Class.forName("buildcraft.api.boards.RedstoneBoardRegistry");
-			bCBoardNBT = Class.forName("buildcraft.robotics.boards.BCBoardNBT");
-
 			getRequiredEnergy = programmingTableClass.getDeclaredMethod("getRequiredEnergy");
 			getEnergy = laserBaseClass.getDeclaredMethod("getEnergy");
 			getRecentEnergyAverage = programmingTableClass.getMethod("getRecentEnergyAverage");
@@ -56,10 +48,6 @@ public class BCProgrammingTableModule
 			optionId.setAccessible(true);
 			options = programmingTableClass.getDeclaredField("options");
 			options.setAccessible(true);
-			INSTANCE = redstoneBoardRegistry.getDeclaredField("instance");
-			INSTANCE.setAccessible(true);
-			upperName = bCBoardNBT.getDeclaredField("upperName");
-			upperName.setAccessible(true);
 
 			IWailaDataProvider hudProv = new HUDProviderProgrammingTable();
 
@@ -84,20 +72,5 @@ public class BCProgrammingTableModule
 		{
 			e.printStackTrace();
 		}
-	}
-	public static void debug()
-	{
-/*
-		WailaAddonBC.log.info("METHOD NAME;INDEX;RETURN VAL;ARGS VAL");
-		Method[] methods = IInventory.class.getDeclaredMethods();
-		for(int i = 0;i < methods.length;i++)
-		{
-			Method m = methods[i];
-			WailaAddonBC.log.info(m.getName()+";"+i+";"+m.getReturnType().getName()+";");
-			for(Class c : m.getParameterTypes())
-			{
-				WailaAddonBC.log.info(c.getName());
-			}
-		}*/
 	}
 }

@@ -52,6 +52,10 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 			{
 				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + "NULL");
 			}
+			if(tag.hasKey("type"))
+			{
+				defaulttip.add(EnumChatFormatting.BLUE + "Type: " + EnumChatFormatting.RESET + tag.getString("type"));
+			}
 			if(tag.getBoolean("canCraft"))
 			{
 				defaulttip.add(EnumChatFormatting.BLUE + "est. time: " + EnumChatFormatting.RESET + formatTime(tag.getDouble("estTime")));
@@ -79,6 +83,7 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 			nbt.setBoolean("canCraft", canCrafting);
 
 			removeTag(nbt,"content");
+			removeTag(nbt,"type");
 
 			IFlexibleRecipe<ItemStack> current = getFieldValue(currentRecipe, table);
 			if(current != null)
@@ -88,6 +93,12 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 				NBTTagCompound subNBT = new NBTTagCompound();
 				stack.writeToNBT(subNBT);
 				nbt.setTag("content", subNBT);
+
+				String type = getRedstoneBoardName(stack);
+				if(type != "UNKNOWN")
+				{
+					nbt.setString("type", type);
+				}
 			}
 		}
 		return nbt;

@@ -6,13 +6,8 @@ import static pome.waila.bcaddon.modules.BCIntegrationTableModule.*;
 import java.util.List;
 import java.util.Set;
 
-import buildcraft.api.boards.RedstoneBoardRegistry;
-import buildcraft.api.boards.RedstoneBoardRobotNBT;
 import buildcraft.api.gates.IGateExpansion;
 import buildcraft.api.recipes.IIntegrationRecipe;
-import buildcraft.core.lib.utils.StringUtils;
-import buildcraft.robotics.ItemRobot;
-import buildcraft.robotics.boards.BCBoardNBT;
 import buildcraft.silicon.TileIntegrationTable;
 import buildcraft.transport.gates.ItemGate;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -75,7 +70,7 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 			}
 			if(tag.hasKey("type"))
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Type: " + EnumChatFormatting.RESET.toString() + EnumChatFormatting.BOLD + tag.getString("type"));
+				defaulttip.add(EnumChatFormatting.BLUE + "Type: " + EnumChatFormatting.RESET + tag.getString("type"));
 			}
 			if(tag.getBoolean("canCraft"))
 			{
@@ -118,29 +113,11 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 				if(output != null)
 				{
 					nbt.setString("content", output.getDisplayName());
-					if(output.getItem() instanceof ItemRobot)
+
+					String str = getRedstoneBoardName(output);
+					if(str != "UNKNOWN")
 					{
-						NBTTagCompound tag = output.getTagCompound();
-						RedstoneBoardRegistry reg = getFieldValue(INSTANCE, null);
-						RedstoneBoardRobotNBT rbNBT = Invoke(getRobotNBT, null, tag);
-
-						if(rbNBT != null)
-						{
-							if(rbNBT instanceof BCBoardNBT)
-							{
-								BCBoardNBT rbrNBT = (BCBoardNBT)rbNBT;
-								String uName = getFieldValue(upperName, rbrNBT);
-
-								String localized = StringUtils.localize(new StringBuilder().append("buildcraft.boardRobot").append(uName).toString());
-
-								nbt.setString("type", localized);
-							}
-							else
-							{
-								String localized = StringUtils.localize(rbNBT.getID().replace(":", "."));
-								nbt.setString("type", localized);
-							}
-						}
+						nbt.setString("type", str);
 					}
 					else if(output.getItem() instanceof ItemGate)
 					{

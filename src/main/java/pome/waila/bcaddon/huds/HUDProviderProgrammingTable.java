@@ -5,12 +5,7 @@ import static pome.waila.bcaddon.modules.BCProgrammingTableModule.*;
 
 import java.util.List;
 
-import buildcraft.api.boards.RedstoneBoardNBT;
-import buildcraft.api.boards.RedstoneBoardRegistry;
 import buildcraft.api.recipes.IProgrammingRecipe;
-import buildcraft.core.lib.utils.StringUtils;
-import buildcraft.robotics.ItemRedstoneBoard;
-import buildcraft.robotics.boards.BCBoardNBT;
 import buildcraft.silicon.TileProgrammingTable;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -21,7 +16,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import pome.waila.bcaddon.WailaAddonBC;
 
 public class HUDProviderProgrammingTable implements IWailaDataProvider
 {
@@ -59,7 +53,7 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			}
 			if(tag.hasKey("type"))
 			{
-				defaulttip.add(EnumChatFormatting.BLUE+ "Type: " + EnumChatFormatting.RESET + EnumChatFormatting.BOLD + tag.getString("type"));
+				defaulttip.add(EnumChatFormatting.BLUE+ "Type: " + EnumChatFormatting.RESET + tag.getString("type"));
 			}
 			if(tag.getBoolean("canCraft"))
 			{
@@ -95,33 +89,19 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			{
 				int optionIndex = getFieldValue(optionId, table);
 
-				if(optionIndex > -1)
+				List<ItemStack> ops = getFieldValue(options,table);
+				if(ops != null && optionIndex >= 0 && optionIndex < ops.size())
 				{
-
-					List<ItemStack> ops = getFieldValue(options,table);
-
 					ItemStack first = Invoke(getStackInSlot,table,0);
 					ItemStack second = ops.get(optionIndex);
-					ItemStack output = current.craft(first, second);
+					ItemStack output = current.craft(first, second).copy();
 
 					nbt.setString("content", output.getDisplayName());
 
-					if(output != null && output.getItem() instanceof ItemRedstoneBoard)
+					String type = getRedstoneBoardName(output);
+					if(type != "UNKNOWN")
 					{
-						RedstoneBoardRegistry reg = getFieldValue(INSTANCE, null);
-						RedstoneBoardNBT<?> rbNBT = reg.getRedstoneBoard(output.stackTagCompound);
-
-						WailaAddonBC.log.info(rbNBT.getID());
-
-						if(rbNBT instanceof BCBoardNBT)
-						{
-							BCBoardNBT bcb = (BCBoardNBT)rbNBT;
-							String upper_name = getFieldValue(upperName, bcb);
-
-							String localized = StringUtils.localize(new StringBuilder().append("buildcraft.boardRobot").append(upper_name).toString());
-
-							nbt.setString("type", localized);
-						}
+						nbt.setString("type", type);
 					}
 				}
 			}

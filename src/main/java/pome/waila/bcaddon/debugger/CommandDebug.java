@@ -1,14 +1,11 @@
 package pome.waila.bcaddon.debugger;
 
-import buildcraft.api.boards.RedstoneBoardNBT;
-import buildcraft.api.boards.RedstoneBoardRegistry;
-import buildcraft.robotics.ItemRedstoneBoard;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
+import pome.waila.bcaddon.WailaAddonBC;
 
 public class CommandDebug extends CommandBase {
 
@@ -33,16 +30,7 @@ public class CommandDebug extends CommandBase {
 			ItemStack stack = player.getCurrentEquippedItem();
 			if(stack != null)
 			{
-				Item item = stack.getItem();
-				if(item instanceof ItemRedstoneBoard)
-				{
-					RedstoneBoardNBT rbNBT = RedstoneBoardRegistry.instance.getRedstoneBoard(stack.getTagCompound());
-
-					if(rbNBT != null)
-					{
-						sendChat(player,rbNBT.getID());
-					}
-				}
+				sendChat(player,WailaAddonBC.getRedstoneBoardName(stack));
 			}
 			else
 			{

@@ -49,6 +49,10 @@ public class HUDProviderAutoWorkbench implements IWailaDataProvider {
 			{
 				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET +"NULL");
 			}
+			if(tag.hasKey("type"))
+			{
+				defaulttip.add(EnumChatFormatting.BLUE + "Type: " + EnumChatFormatting.RESET + tag.getString("type"));
+			}
 		}
 		return defaulttip;
 	}
@@ -66,6 +70,7 @@ public class HUDProviderAutoWorkbench implements IWailaDataProvider {
 			TileAutoWorkbench table = (TileAutoWorkbench)tile;
 
 			removeTag(nbt,"content");
+			removeTag(nbt,"type");
 
 			LocalInventoryCrafting matrix = getFieldValue(craftMatrix, table);
 			ItemStack current = Invoke(getRecipeOutput, matrix);
@@ -76,6 +81,12 @@ public class HUDProviderAutoWorkbench implements IWailaDataProvider {
 				current.writeToNBT(subNBT);
 
 				nbt.setTag("content", subNBT);
+
+				String type = getRedstoneBoardName(current);
+				if(type != "UNKNOWN")
+				{
+					nbt.setString("type", type);
+				}
 			}
 		}
 		return nbt;

@@ -88,7 +88,7 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 			IFlexibleRecipe<ItemStack> current = getFieldValue(currentRecipe, table);
 			if(current != null)
 			{
-				ItemStack stack = current.craft(table, false).crafted;
+				ItemStack stack = current.craft(table, true).crafted;
 
 				NBTTagCompound subNBT = new NBTTagCompound();
 				stack.writeToNBT(subNBT);

@@ -49,6 +49,13 @@ public class HUDProviderBCPipe implements IWailaDataProvider
 	@Override
 	public List<String> getWailaBody(ItemStack stack, List<String> defaulttip, IWailaDataAccessor accessor,IWailaConfigHandler config)
 	{
+		if(stack != null)
+		{
+			Item item = stack.getItem();
+			List<String> list = new ArrayList<String>();
+			item.addInformation(stack, null, list, false);
+			defaulttip.addAll(list);
+		}
 		return defaulttip;
 	}
 

@@ -5,7 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
-import pome.waila.bcaddon.WailaAddonBC;
+import pome.waila.bcaddon.util.ItemSourceFinder;
 
 public class CommandDebug extends CommandBase {
 
@@ -30,11 +30,7 @@ public class CommandDebug extends CommandBase {
 			ItemStack stack = player.getCurrentEquippedItem();
 			if(stack != null)
 			{
-				sendChat(player,WailaAddonBC.getRedstoneBoardName(stack));
-			}
-			else
-			{
-				sendChat(player,"NULL");
+				sendChat(player, ItemSourceFinder.getItemOwner(stack));
 			}
 		}
 	}

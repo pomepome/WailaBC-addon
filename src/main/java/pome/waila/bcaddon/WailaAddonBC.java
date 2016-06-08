@@ -146,4 +146,13 @@ public class WailaAddonBC
 		bcbn.addInformation(stack, null, list, false);
 		return list.get(0);
 	}
+	public static <T> List<T> copyList(List<T> source,int min)
+	{
+		List<T> list = new ArrayList<T>();
+		for(int i = min;i < source.size();i++)
+		{
+			list.add(source.get(i));
+		}
+		return list;
+	}
 }

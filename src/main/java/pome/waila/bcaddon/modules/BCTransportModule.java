@@ -1,44 +1,41 @@
 package pome.waila.bcaddon.modules;
 
 import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import pome.waila.bcaddon.WailaAddonBC;
+import pome.waila.bcaddon.addons.IAddon;
 import pome.waila.bcaddon.huds.HUDProviderBCPipe;
+import pome.waila.bcaddon.reflection.ReflectedObjects;
+import pome.waila.bcaddon.util.ProviderTypes;
 
-public class BCTransportModule
+public class BCTransportModule implements IAddon
 {
-	private static Class buildCraftTransport = null;
-	private static Class tileGenericPipe = null;
 
-	public static void register()
+	@Override
+	public String[] getRequiringMods()
 	{
-		try
-		{
-			buildCraftTransport = Class.forName("buildcraft.BuildCraftTransport");
-		}
-		catch (ClassNotFoundException e)
-		{
-			WailaAddonBC.log.error("Couldn't find BuildCraftTransport Class... What's wrong?");
-			return;
-		}
-		try
-		{
-			tileGenericPipe = Class.forName("buildcraft.transport.TileGenericPipe");
-			WailaAddonBC.log.info("TileGenericPipe class found! Registring HUD...");
-		}
-		catch (ClassNotFoundException e)
-		{
-			WailaAddonBC.log.error("Couldn't find TileGenericPipe Class... What's wrong?");
-			return;
-		}
+		return new String[]{"BuildCraft|Transport"};
+	}
 
-		IWailaDataProvider hudProv = new HUDProviderBCPipe();
+	@Override
+	public IWailaDataProvider getNewDataProvider()
+	{
+		return new HUDProviderBCPipe();
+	}
 
-		ModuleRegistrar registrar = ModuleRegistrar.instance();
-		registrar.registerStackProvider(hudProv, tileGenericPipe);
-		registrar.registerHeadProvider(hudProv, tileGenericPipe);
-		registrar.registerBodyProvider(hudProv, tileGenericPipe);
-		registrar.registerTailProvider(hudProv, tileGenericPipe);
-		WailaAddonBC.log.info("Registered successful!");
+	@Override
+	public ProviderTypes getProvidingTypes()
+	{
+		return new ProviderTypes(true, true, true, true, false);
+	}
+
+	@Override
+	public Class getTileEntityClass()
+	{
+		return ReflectedObjects.pipeTileClass;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "Pipe Module";
 	}
 }

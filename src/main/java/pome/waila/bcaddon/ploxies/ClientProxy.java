@@ -1,22 +1,14 @@
 package pome.waila.bcaddon.ploxies;
 
-import pome.waila.bcaddon.modules.BCAdvancedCraftingTableModule;
-import pome.waila.bcaddon.modules.BCAssemblyTableModule;
-import pome.waila.bcaddon.modules.BCAutoWorkbenchModule;
-import pome.waila.bcaddon.modules.BCIntegrationTableModule;
-import pome.waila.bcaddon.modules.BCProgrammingTableModule;
-import pome.waila.bcaddon.modules.BCTransportModule;
+import pome.waila.bcaddon.addons.AddonManager;
+import pome.waila.bcaddon.reflection.ReflectedObjects;
 
 public class ClientProxy extends CommonProxy
 {
 	@Override
 	public void registerHUDModules()
 	{
-		BCTransportModule.register();
-		BCAssemblyTableModule.register();
-		BCAdvancedCraftingTableModule.register();
-		BCProgrammingTableModule.register();
-		BCIntegrationTableModule.register();
-		BCAutoWorkbenchModule.register();
+		ReflectedObjects.load();
+		AddonManager.registerDefaultAddons();
 	}
 }

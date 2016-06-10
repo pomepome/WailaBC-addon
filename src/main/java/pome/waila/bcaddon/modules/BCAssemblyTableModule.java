@@ -1,70 +1,40 @@
 package pome.waila.bcaddon.modules;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import pome.waila.bcaddon.WailaAddonBC;
+import mcp.mobius.waila.api.IWailaDataProvider;
+import pome.waila.bcaddon.addons.IAddon;
 import pome.waila.bcaddon.huds.HUDProviderAssemblyTable;
+import pome.waila.bcaddon.reflection.ReflectedObjects;
+import pome.waila.bcaddon.util.ProviderTypes;
 
-public class BCAssemblyTableModule
+public class BCAssemblyTableModule implements IAddon
 {
-	public static Class assemblyTableClass;
-	public static Class laserBaseClass;
-	public static Class assemblyRecipeManager;
-
-	public static Method getRequiredEnergy;
-	public static Method getEnergy;
-	public static Method getRecentEnergyAverage;
-	public static Method canCraft;
-
-	public static Field currentRecipe;
-	public static Field recipeManager;
-
-	public static void register()
+	@Override
+	public String[] getRequiringMods()
 	{
-		try
-		{
-			assemblyTableClass = Class.forName("buildcraft.silicon.TileAssemblyTable");
-			laserBaseClass = Class.forName("buildcraft.silicon.TileLaserTableBase");
-			assemblyRecipeManager = Class.forName("buildcraft.core.recipes.AssemblyRecipeManager");
+		return new String[]{"BuildCraft|Silicon"};
+	}
 
-			getRequiredEnergy = assemblyTableClass.getDeclaredMethod("getRequiredEnergy");
-			getEnergy = laserBaseClass.getDeclaredMethod("getEnergy");
-			getRecentEnergyAverage = assemblyTableClass.getMethod("getRecentEnergyAverage");
-			canCraft = assemblyTableClass.getDeclaredMethod("canCraft");
+	@Override
+	public IWailaDataProvider getNewDataProvider()
+	{
+		return new HUDProviderAssemblyTable();
+	}
 
-			getRequiredEnergy.setAccessible(true);
-			getEnergy.setAccessible(true);
-			getRecentEnergyAverage.setAccessible(true);
-			canCraft.setAccessible(true);
+	@Override
+	public ProviderTypes getProvidingTypes()
+	{
+		return new ProviderTypes(false, false, true, false, true);
+	}
 
-			currentRecipe = assemblyTableClass.getDeclaredField("currentRecipe");
-			currentRecipe.setAccessible(true);
-			recipeManager = assemblyRecipeManager.getDeclaredField("INSTANCE");
+	@Override
+	public Class getTileEntityClass()
+	{
+		return ReflectedObjects.assemblyTableClass;
+	}
 
-			HUDProviderAssemblyTable hudProv = new HUDProviderAssemblyTable();
-
-			ModuleRegistrar registrar = ModuleRegistrar.instance();
-			registrar.registerBodyProvider(hudProv, assemblyTableClass);
-			registrar.registerNBTProvider(hudProv, assemblyTableClass);
-			WailaAddonBC.log.info("Assembly table module has registered successfully!");
-		}
-		catch(ClassNotFoundException e)
-		{
-			WailaAddonBC.log.error("Assembly table class was not found...");
-		}
-		catch(NoSuchMethodException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-		}
+	@Override
+	public String getName()
+	{
+		return "AssemblyTable Module";
 	}
 }

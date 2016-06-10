@@ -1,7 +1,7 @@
 package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.WailaAddonBC.*;
-import static pome.waila.bcaddon.modules.BCProgrammingTableModule.*;
+import static pome.waila.bcaddon.reflection.ReflectedObjects.*;
+import static pome.waila.bcaddon.util.Utils.*;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import pome.waila.bcaddon.util.TimeHolder;
 
 public class HUDProviderProgrammingTable implements IWailaDataProvider
 {
-	long lastMillisec;
-	int lastEnergy;
+	private TimeHolder timeHolder = new TimeHolder(0,0);
 
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
@@ -45,7 +45,8 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			NBTTagCompound tag = accessor.getNBTData();
 			if(tag.hasKey("content"))
 			{
-				defaulttip.add(EnumChatFormatting.BLUE+ "Output: " + EnumChatFormatting.RESET + tag.getString("content"));
+				ItemStack output = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
+				defaulttip.add(EnumChatFormatting.BLUE+ "Output: " + EnumChatFormatting.RESET + formatString(output));
 			}
 			else
 			{
@@ -75,7 +76,7 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 		{
 			TileProgrammingTable table = (TileProgrammingTable)tile;
 
-			double estTime = predictRemTime(table);
+			double estTime = predictRemTime(table,timeHolder);
 			nbt.setDouble("estTime", estTime);
 
 			boolean canCrafting = Invoke(canCraft,table);
@@ -84,7 +85,7 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			removeTag(nbt,"type");
 			removeTag(nbt, "content");
 
-			IProgrammingRecipe current = getFieldValue(currentRecipe, table);
+			IProgrammingRecipe current = tryGetCurrentRecipe(table);
 			if(current != null)
 			{
 				int optionIndex = getFieldValue(optionId, table);
@@ -96,7 +97,7 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 					ItemStack second = ops.get(optionIndex);
 					ItemStack output = current.craft(first, second).copy();
 
-					nbt.setString("content", output.getDisplayName());
+					writeStackToNBT(nbt, "content", output);
 
 					String type = getRedstoneBoardName(output);
 					if(type != "UNKNOWN")
@@ -107,34 +108,5 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			}
 		}
 		return nbt;
-	}
-	public double predictRemTime(TileProgrammingTable table)
-	{
-		try
-		{
-		int energyCost = Invoke(getRequiredEnergy, table);//table.getRequiredEnergy();
-		int currentEnergy = Invoke(getEnergy, table);//table.getEnergy();
-
-		double deltaTime = (double)(System.currentTimeMillis() - lastMillisec) / 1000;
-		int deltaFlow = currentEnergy - lastEnergy;
-		if(deltaFlow < 0)
-		{
-			deltaFlow = 0;
-		}
-		int toFlow = energyCost - currentEnergy;
-
-		lastEnergy = currentEnergy;
-		lastMillisec = System.currentTimeMillis();
-		if(deltaTime == 0)
-		{
-			return 0;
-		}
-		return (double)toFlow / (deltaFlow / deltaTime);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return 0;
-		}
 	}
 }

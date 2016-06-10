@@ -1,7 +1,7 @@
 package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.WailaAddonBC.*;
-import static pome.waila.bcaddon.modules.BCIntegrationTableModule.*;
+import static pome.waila.bcaddon.reflection.ReflectedObjects.*;
+import static pome.waila.bcaddon.util.Utils.*;
 
 import java.util.List;
 import java.util.Set;
@@ -21,14 +21,12 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import pome.waila.bcaddon.util.TimeHolder;
 
 public class HUDProviderIntegrationTable implements IWailaDataProvider
 {
 
-	private static final String ITALIC_BLUE = "\u00a79\u00a7o";
-
-	long lastMillisec;
-	int lastEnergy;
+	private TimeHolder timeHolder = new TimeHolder(0,0);;
 
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
@@ -53,11 +51,12 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 			NBTTagCompound tag = accessor.getNBTData();
 			if(tag.hasKey("content"))
 			{
-				defaulttip.add(EnumChatFormatting.BLUE+"Output: " + EnumChatFormatting.RESET + tag.getString("content"));
+				ItemStack content = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
+				defaulttip.add(EnumChatFormatting.BLUE+"Out: " + EnumChatFormatting.RESET + formatString(content));
 			}
 			else
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Output: "+ EnumChatFormatting.RESET + "NULL");
+				defaulttip.add(EnumChatFormatting.BLUE + "Out: "+ EnumChatFormatting.RESET + "NULL");
 			}
 			if(tag.hasKey("expansions") && tag.getTagList("expansions",8).tagCount() > 0)
 			{
@@ -92,7 +91,7 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 		{
 			TileIntegrationTable table = (TileIntegrationTable)tile;
 
-			double estTime = predictRemTime(table);
+			double estTime = predictRemTime(table,timeHolder);
 			nbt.setDouble("estTime", estTime);
 
 			boolean canCrafting = Invoke(canCraft,table);
@@ -112,7 +111,7 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 
 				if(output != null)
 				{
-					nbt.setString("content", output.getDisplayName());
+					writeStackToNBT(nbt, "content", output);
 
 					String str = getRedstoneBoardName(output);
 					if(str != "UNKNOWN")
@@ -126,8 +125,8 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 						NBTTagList tagList = new NBTTagList();
 						for(IGateExpansion exp : expansionSet)
 						{
-							NBTTagString subNBT = new NBTTagString(exp.getDisplayName());
-							tagList.appendTag(subNBT);
+							NBTTagString expNBT = new NBTTagString(exp.getDisplayName());
+							tagList.appendTag(expNBT);
 						}
 						nbt.setTag("expansions", tagList);
 					}
@@ -135,34 +134,5 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 			}
 		}
 		return nbt;
-	}
-	public double predictRemTime(TileIntegrationTable table)
-	{
-		try
-		{
-		int energyCost = Invoke(getRequiredEnergy, table);//table.getRequiredEnergy();
-		int currentEnergy = Invoke(getEnergy, table);//table.getEnergy();
-
-		double deltaTime = (double)(System.currentTimeMillis() - lastMillisec) / 1000;
-		int deltaFlow = currentEnergy - lastEnergy;
-		if(deltaFlow < 0)
-		{
-			deltaFlow = 0;
-		}
-		int toFlow = energyCost - currentEnergy;
-
-		lastEnergy = currentEnergy;
-		lastMillisec = System.currentTimeMillis();
-		if(deltaTime == 0)
-		{
-			return 0;
-		}
-		return (double)toFlow / (deltaFlow / deltaTime);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return 0;
-		}
 	}
 }

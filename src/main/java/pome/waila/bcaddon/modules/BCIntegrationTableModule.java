@@ -1,76 +1,42 @@
 package pome.waila.bcaddon.modules;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import pome.waila.bcaddon.ReflectionHelper;
-import pome.waila.bcaddon.WailaAddonBC;
+import pome.waila.bcaddon.addons.IAddon;
 import pome.waila.bcaddon.huds.HUDProviderIntegrationTable;
+import pome.waila.bcaddon.reflection.ReflectedObjects;
+import pome.waila.bcaddon.util.ProviderTypes;
 
-public class BCIntegrationTableModule
+public class BCIntegrationTableModule implements IAddon
 {
-	public static Class integrationTableClass;
-	public static Class laserBaseClass;
-	public static Class itemGate;
 
-	public static Method getRequiredEnergy;
-	public static Method getEnergy;
-	public static Method canCraft;
-	public static Method getStackInSlot;
-	public static Method getExpansions;
-	public static Method getInstalledExpansions;
-
-	public static Field activeRecipe;
-
-	public static void register()
+	@Override
+	public String[] getRequiringMods()
 	{
-		try
-		{
-			integrationTableClass = Class.forName("buildcraft.silicon.TileIntegrationTable");
-			laserBaseClass = Class.forName("buildcraft.silicon.TileLaserTableBase");
-			itemGate = Class.forName("buildcraft.transport.gates.ItemGate");
+		return new String[]{"BuildCraft|Silicon"};
+	}
 
-			getRequiredEnergy = integrationTableClass.getDeclaredMethod("getRequiredEnergy");
-			getEnergy = laserBaseClass.getDeclaredMethod("getEnergy");
-			canCraft = integrationTableClass.getDeclaredMethod("canCraft");
-			getExpansions = integrationTableClass.getDeclaredMethod("getExpansions");
-			getStackInSlot = ReflectionHelper.getMethod(IInventory.class, "getStackInSlot", "func_70301_a", int.class);
-			getInstalledExpansions = itemGate.getMethod("getInstalledExpansions", ItemStack.class);
-			getRequiredEnergy.setAccessible(true);
-			getEnergy.setAccessible(true);
-			canCraft.setAccessible(true);
-			getExpansions.setAccessible(true);
+	@Override
+	public IWailaDataProvider getNewDataProvider()
+	{
+		return new HUDProviderIntegrationTable();
+	}
 
-			activeRecipe = integrationTableClass.getDeclaredField("activeRecipe");
-			activeRecipe.setAccessible(true);
+	@Override
+	public ProviderTypes getProvidingTypes()
+	{
+		return new ProviderTypes(false, false, true, false, true);
+	}
 
-			IWailaDataProvider hudProv = new HUDProviderIntegrationTable();
+	@Override
+	public Class getTileEntityClass()
+	{
+		return ReflectedObjects.integrationTableClass;
+	}
 
-			ModuleRegistrar registrar = ModuleRegistrar.instance();
-			registrar.registerBodyProvider(hudProv, integrationTableClass);
-			registrar.registerNBTProvider(hudProv, integrationTableClass);
-			WailaAddonBC.log.info("Integration Table module has registered successfully!");
-		}
-		catch(ClassNotFoundException e)
-		{
-			WailaAddonBC.log.error("Integration Table class was not found...");
-		}
-		catch(NoSuchMethodException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-		}
+	@Override
+	public String getName()
+	{
+		return "IntegrationTable Module";
 	}
 }
 

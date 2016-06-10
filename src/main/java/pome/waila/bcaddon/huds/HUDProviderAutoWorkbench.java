@@ -1,7 +1,7 @@
 package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.WailaAddonBC.*;
-import static pome.waila.bcaddon.modules.BCAutoWorkbenchModule.*;
+import static pome.waila.bcaddon.reflection.ReflectedObjects.*;
+import static pome.waila.bcaddon.util.Utils.*;
 
 import java.util.List;
 
@@ -17,7 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-public class HUDProviderAutoWorkbench implements IWailaDataProvider {
+public class HUDProviderAutoWorkbench implements IWailaDataProvider
+{
 
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
@@ -43,11 +44,11 @@ public class HUDProviderAutoWorkbench implements IWailaDataProvider {
 			if(tag.hasKey("content"))
 			{
 				ItemStack result = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
-				defaulttip.add( EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + result.getDisplayName());
+				defaulttip.add( EnumChatFormatting.BLUE + "Out: " + EnumChatFormatting.RESET + formatString(result));
 			}
 			else
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET +"NULL");
+				defaulttip.add(EnumChatFormatting.BLUE + "Out: " + EnumChatFormatting.RESET +"NULL");
 			}
 			if(tag.hasKey("type"))
 			{
@@ -77,10 +78,7 @@ public class HUDProviderAutoWorkbench implements IWailaDataProvider {
 
 			if(current != null)
 			{
-				NBTTagCompound subNBT = new NBTTagCompound();
-				current.writeToNBT(subNBT);
-
-				nbt.setTag("content", subNBT);
+				writeStackToNBT(nbt, "content", current);
 
 				String type = getRedstoneBoardName(current);
 				if(type != "UNKNOWN")

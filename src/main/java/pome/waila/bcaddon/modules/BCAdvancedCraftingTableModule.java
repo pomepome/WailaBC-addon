@@ -1,66 +1,40 @@
 package pome.waila.bcaddon.modules;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import pome.waila.bcaddon.WailaAddonBC;
+import pome.waila.bcaddon.addons.IAddon;
 import pome.waila.bcaddon.huds.HUDProviderAdvancedCraftingTable;
+import pome.waila.bcaddon.reflection.ReflectedObjects;
+import pome.waila.bcaddon.util.ProviderTypes;
 
-public class BCAdvancedCraftingTableModule
+public class BCAdvancedCraftingTableModule implements IAddon
 {
-	public static Class advancedCraftingClass;
-	public static Class laserBaseClass;
-
-	public static Method getRequiredEnergy;
-	public static Method getEnergy;
-	public static Method getRecentEnergyAverage;
-	public static Method canCraft;
-
-	public static Field currentRecipe;
-
-	public static void register()
+	@Override
+	public String[] getRequiringMods()
 	{
-		try
-		{
-			advancedCraftingClass = Class.forName("buildcraft.silicon.TileAdvancedCraftingTable");
-			laserBaseClass = Class.forName("buildcraft.silicon.TileLaserTableBase");
-			getRequiredEnergy = advancedCraftingClass.getDeclaredMethod("getRequiredEnergy");
-			getEnergy = laserBaseClass.getDeclaredMethod("getEnergy");
-			getRecentEnergyAverage = advancedCraftingClass.getMethod("getRecentEnergyAverage");
-			canCraft = advancedCraftingClass.getDeclaredMethod("canCraft");
+		return new String[]{"BuildCraft|Silicon"};
+	}
 
-			getRequiredEnergy.setAccessible(true);
-			getEnergy.setAccessible(true);
-			getRecentEnergyAverage.setAccessible(true);
-			canCraft.setAccessible(true);
+	@Override
+	public IWailaDataProvider getNewDataProvider()
+	{
+		return new HUDProviderAdvancedCraftingTable();
+	}
 
-			currentRecipe = advancedCraftingClass.getDeclaredField("currentRecipe");
-			currentRecipe.setAccessible(true);
+	@Override
+	public ProviderTypes getProvidingTypes()
+	{
+		return new ProviderTypes(false, false, true, false, true);
+	}
 
-			IWailaDataProvider hudProv = new HUDProviderAdvancedCraftingTable();
+	@Override
+	public Class getTileEntityClass()
+	{
+		return ReflectedObjects.advancedCraftingTableClass;
+	}
 
-			ModuleRegistrar registrar = ModuleRegistrar.instance();
-			registrar.registerBodyProvider(hudProv, advancedCraftingClass);
-			registrar.registerNBTProvider(hudProv, advancedCraftingClass);
-			WailaAddonBC.log.info("Advanced Crafting Table module has registered successfully!");
-		}
-		catch(ClassNotFoundException e)
-		{
-			WailaAddonBC.log.error("Advanced Crafting Table class was not found...");
-		}
-		catch(NoSuchMethodException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-		}
+	@Override
+	public String getName()
+	{
+		return "AdvancedCraftingTable Module";
 	}
 }

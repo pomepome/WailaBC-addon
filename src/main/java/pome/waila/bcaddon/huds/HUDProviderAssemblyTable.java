@@ -1,7 +1,7 @@
 package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.WailaAddonBC.*;
-import static pome.waila.bcaddon.modules.BCAssemblyTableModule.*;
+import static pome.waila.bcaddon.reflection.ReflectedObjects.*;
+import static pome.waila.bcaddon.util.Utils.*;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import pome.waila.bcaddon.util.TimeHolder;
 
 public class HUDProviderAssemblyTable implements IWailaDataProvider
 {
-	long lastMillisec;
-	int lastEnergy;
+	private TimeHolder timeHolder = new TimeHolder(0,0);
 
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
@@ -46,7 +46,7 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 			if(tag.hasKey("content"))
 			{
 				ItemStack result = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
-				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + result.getDisplayName());
+				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + formatString(result));
 			}
 			else
 			{
@@ -76,7 +76,7 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 		{
 			TileAssemblyTable table = (TileAssemblyTable)tile;
 
-			double estTime = predictRemTime(table);
+			double estTime = predictRemTime(table,timeHolder);
 			nbt.setDouble("estTime", estTime);
 
 			boolean canCrafting = Invoke(canCraft,table);
@@ -85,7 +85,7 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 			removeTag(nbt,"content");
 			removeTag(nbt,"type");
 
-			IFlexibleRecipe<ItemStack> current = getFieldValue(currentRecipe, table);
+			IFlexibleRecipe<ItemStack> current = tryGetCurrentRecipe(table);
 			if(current != null)
 			{
 				ItemStack stack = current.craft(table, true).crafted;
@@ -102,34 +102,5 @@ public class HUDProviderAssemblyTable implements IWailaDataProvider
 			}
 		}
 		return nbt;
-	}
-	public double predictRemTime(TileAssemblyTable table)
-	{
-		try
-		{
-		int energyCost = Invoke(getRequiredEnergy, table);//table.getRequiredEnergy();
-		int currentEnergy = Invoke(getEnergy, table);//table.getEnergy();
-
-		double deltaTime = (double)(System.currentTimeMillis() - lastMillisec) / 1000;
-		int deltaFlow = currentEnergy - lastEnergy;
-		if(deltaFlow < 0)
-		{
-			deltaFlow = 0;
-		}
-		int toFlow = energyCost - currentEnergy;
-
-		lastEnergy = currentEnergy;
-		lastMillisec = System.currentTimeMillis();
-		if(deltaTime == 0)
-		{
-			return 0;
-		}
-		return (double)toFlow / (deltaFlow / deltaTime);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return 0;
-		}
 	}
 }

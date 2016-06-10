@@ -1,7 +1,7 @@
 package pome.waila.bcaddon.huds;
 
-import static pome.waila.bcaddon.WailaAddonBC.*;
-import static pome.waila.bcaddon.modules.BCAdvancedCraftingTableModule.*;
+import static pome.waila.bcaddon.reflection.ReflectedObjects.*;
+import static pome.waila.bcaddon.util.Utils.*;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import pome.waila.bcaddon.util.TimeHolder;
 
-public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
-
-	long lastMillisec;
-	int lastEnergy;
+public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider
+{
+	private TimeHolder timeHolder = new TimeHolder(0,0);
 
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
@@ -46,15 +46,15 @@ public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
 			if(tag.hasKey("content"))
 			{
 				ItemStack result = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
-				defaulttip.add( EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + result.getDisplayName());
+				defaulttip.add( EnumChatFormatting.BLUE + "out: " + EnumChatFormatting.RESET + formatString(result));
 			}
 			else
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET +"NULL");
+				defaulttip.add(EnumChatFormatting.BLUE + "out: " + EnumChatFormatting.RESET +"NULL");
 			}
 			if(tag.hasKey("type"))
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Output: " + EnumChatFormatting.RESET + tag.getString("type"));
+				defaulttip.add(EnumChatFormatting.BLUE + "Type: " + EnumChatFormatting.RESET + tag.getString("type"));
 			}
 			if(tag.getBoolean("canCraft"))
 			{
@@ -76,7 +76,7 @@ public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
 		{
 			TileAdvancedCraftingTable table = (TileAdvancedCraftingTable)tile;
 
-			double estTime = predictRemTime(table);
+			double estTime = predictRemTime(table,timeHolder);
 			nbt.setDouble("estTime", estTime);
 
 			boolean canCrafting = Invoke(canCraft,table);
@@ -85,7 +85,7 @@ public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
 			removeTag(nbt,"content");
 			removeTag(nbt,"type");
 
-			IRecipe current = getFieldValue(currentRecipe, table);
+			IRecipe current = tryGetCurrentRecipe(table);
 			if(current != null)
 			{
 				ItemStack output = current.getRecipeOutput().copy();
@@ -103,34 +103,5 @@ public class HUDProviderAdvancedCraftingTable implements IWailaDataProvider {
 			}
 		}
 		return nbt;
-	}
-	public double predictRemTime(TileAdvancedCraftingTable table)
-	{
-		try
-		{
-		int energyCost = Invoke(getRequiredEnergy, table);//table.getRequiredEnergy();
-		int currentEnergy = Invoke(getEnergy, table);//table.getEnergy();
-
-		double deltaTime = (double)(System.currentTimeMillis() - lastMillisec) / 1000;
-		int deltaFlow = currentEnergy - lastEnergy;
-		if(deltaFlow < 0)
-		{
-			deltaFlow = 0;
-		}
-		int toFlow = energyCost - currentEnergy;
-
-		lastEnergy = currentEnergy;
-		lastMillisec = System.currentTimeMillis();
-		if(deltaTime == 0)
-		{
-			return 0;
-		}
-		return (double)toFlow / (deltaFlow / deltaTime);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return 0;
-		}
 	}
 }

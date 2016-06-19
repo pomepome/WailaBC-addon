@@ -12,11 +12,17 @@ import buildcraft.api.boards.RedstoneBoardRegistry;
 import buildcraft.robotics.ItemRedstoneBoard;
 import buildcraft.robotics.ItemRobot;
 import buildcraft.silicon.TileLaserTableBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 public class Utils
 {
+	public static final String resultString = "hud.result";
+	public static final String typeString = "hud.type";
+	public static final String timeString = "hud.time";
+	public static final String expString = "hud.exp";
 
 	public static double predictRemTime(TileLaserTableBase table,TimeHolder timeHolder)
 	{
@@ -110,25 +116,50 @@ public class Utils
 	}
 	public static String formatTime(double seconds)
 	{
+		String lang = Minecraft.getMinecraft().gameSettings.language;
+		boolean reverseMode = lang == "ar_SA";
 		if(Double.isInfinite(seconds) || Double.isNaN(seconds))
 		{
-			return "\u221es";
+			return "\u221e";
 		}
+		int hour = 0,minute = 0;
 		String ret = "";
 		if(seconds >= 3600)
 		{
-			int hour = ((int)seconds) / 3600;
-			ret += hour + "h";
+			hour = ((int)seconds) / 3600;
 			seconds -= 3600 * hour;
 		}
 		if(seconds >= 60)
 		{
-			int minute = ((int)seconds) / 60;
-			ret += minute + "m";
+			minute = ((int)seconds) / 60;
 			seconds -= 60 * minute;
 		}
 		BigDecimal bd = new BigDecimal(seconds);
-		ret += bd.setScale(1, RoundingMode.DOWN).toString() + "s";
+		String secString= bd.setScale(1, RoundingMode.DOWN).toString();
+		if(!reverseMode)
+		{
+			if(hour > 0)
+			{
+				ret = hour + translate("tu.hours");
+			}
+			if(minute > 0)
+			{
+				ret += minute + translate("tu.minutes");
+			}
+			ret += secString + translate("tu.seconds");
+		}
+		else
+		{
+			ret += translate("tu.seconds") + secString;
+			if(minute > 0)
+			{
+				ret += translate("tu.minutes") + minute;
+			}
+			if(hour > 0)
+			{
+				ret += translate("tu.hours") + hour;
+			}
+		}
 		return ret;
 	}
 	public static String formatString(ItemStack is)
@@ -143,5 +174,18 @@ public class Utils
 			dispName += " x" + is.stackSize;
 		}
 		return dispName;
+	}
+	public static String translate(String s)
+	{
+		return StatCollector.translateToLocal(s);
+	}
+	public static String reverse(String str)
+	{
+		StringBuilder sb = new StringBuilder();
+		for(int i = str.length() - 1;i >= 0;i--)
+		{
+			sb.append(str.charAt(i));
+		}
+		return sb.toString();
 	}
 }

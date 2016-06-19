@@ -1,0 +1,10 @@
+#Russian language file by pome.
+hud.result=Работы:
+hud.type=Модель:
+hud.time=Предполагаемое время:
+hud.exp=Расширение:
+
+#time unit
+tu.hours=час
+tu.minutes=минута
+tu.seconds=второй

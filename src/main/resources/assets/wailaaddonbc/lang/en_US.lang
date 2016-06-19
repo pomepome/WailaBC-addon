@@ -1,0 +1,10 @@
+#English language file by pome.
+hud.result=Out:
+hud.type=Type:
+hud.time=est. time:
+hud.exp=Expansions:
+
+#time unit
+tu.hours=h
+tu.minutes=m
+tu.seconds=s

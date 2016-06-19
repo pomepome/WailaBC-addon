@@ -46,19 +46,19 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			if(tag.hasKey("content"))
 			{
 				ItemStack output = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
-				defaulttip.add(EnumChatFormatting.BLUE+ "Output: " + EnumChatFormatting.RESET + formatString(output));
+				defaulttip.add(String.format("%s%s %s%s", EnumChatFormatting.BLUE,translate(resultString),EnumChatFormatting.RESET,formatString(output)));
 			}
 			else
 			{
-				defaulttip.add(EnumChatFormatting.BLUE+ "Output: " + EnumChatFormatting.RESET + "NULL");
+				defaulttip.add(String.format("%s%s %sNULL", EnumChatFormatting.BLUE,translate(resultString),EnumChatFormatting.RESET));
 			}
 			if(tag.hasKey("type"))
 			{
-				defaulttip.add(EnumChatFormatting.BLUE+ "Type: " + EnumChatFormatting.RESET + tag.getString("type"));
+				defaulttip.add(String.format("%s%s %s%s", EnumChatFormatting.BLUE,translate(typeString),EnumChatFormatting.RESET,tag.getString("type")));
 			}
 			if(tag.getBoolean("canCraft"))
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "est. time: " + EnumChatFormatting.RESET + formatTime(tag.getDouble("estTime")));
+				defaulttip.add(String.format("%s%s %s%s", EnumChatFormatting.BLUE,translate(timeString),EnumChatFormatting.RESET,formatTime(tag.getDouble("estTime"))));
 			}
 		}
 		return defaulttip;

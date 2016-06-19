@@ -1,0 +1,10 @@
+#Afrikaan language file by pome.
+hud.result=Uitkoms:
+hud.type=Tipe:
+hud.time=geskatte tyd:
+hud.exp=uitbreiding:
+
+#time unit
+tu.hours=ure
+tu.minutes=minute
+tu.seconds=sekondes

@@ -51,29 +51,29 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 			NBTTagCompound tag = accessor.getNBTData();
 			if(tag.hasKey("content"))
 			{
-				ItemStack content = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
-				defaulttip.add(EnumChatFormatting.BLUE+"Out: " + EnumChatFormatting.RESET + formatString(content));
+				ItemStack output = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("content"));
+				defaulttip.add(String.format("%s%s %s%s", EnumChatFormatting.BLUE,translate(resultString),EnumChatFormatting.RESET,formatString(output)));
 			}
 			else
 			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Out: "+ EnumChatFormatting.RESET + "NULL");
+				defaulttip.add(String.format("%s%s %sNULL", EnumChatFormatting.BLUE,translate(resultString),EnumChatFormatting.RESET));
+			}
+			if(tag.hasKey("type"))
+			{
+				defaulttip.add(String.format("%s%s %s%s", EnumChatFormatting.BLUE,translate(typeString),EnumChatFormatting.RESET,tag.getString("type")));
+			}
+			if(tag.getBoolean("canCraft"))
+			{
+				defaulttip.add(String.format("%s%s %s%s", EnumChatFormatting.BLUE,translate(timeString),EnumChatFormatting.RESET,formatTime(tag.getDouble("estTime"))));
 			}
 			if(tag.hasKey("expansions") && tag.getTagList("expansions",8).tagCount() > 0)
 			{
 				NBTTagList list = tag.getTagList("expansions", 8);
-				defaulttip.add(EnumChatFormatting.BLUE + "Expansions: ");
+				defaulttip.add(EnumChatFormatting.BLUE + translate("hud.exp") + " ");
 				for(int i = 0;i < list.tagCount();i++)
 				{
 					defaulttip.add(list.getStringTagAt(i));
 				}
-			}
-			if(tag.hasKey("type"))
-			{
-				defaulttip.add(EnumChatFormatting.BLUE + "Type: " + EnumChatFormatting.RESET + tag.getString("type"));
-			}
-			if(tag.getBoolean("canCraft"))
-			{
-				defaulttip.add(EnumChatFormatting.BLUE + "est. time: " + EnumChatFormatting.RESET + formatTime(tag.getDouble("estTime")));
 			}
 		}
 		return defaulttip;

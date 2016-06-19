@@ -15,7 +15,7 @@ import net.minecraftforge.common.config.Configuration;
 import pome.waila.bcaddon.debugger.CommandDebug;
 import pome.waila.bcaddon.ploxies.CommonProxy;
 
-@Mod(modid="WailaAddonBC",name="WailaAddonBC",version = "1.0.1",dependencies = "required-after:Waila;required-after:BuildCraft|Transport@[7.0.3,);required-after:BuildCraft|Silicon@[7.0.3,)")
+@Mod(modid="WailaAddonBC",name="WailaAddonBC",version = "1.0.5",dependencies = "required-after:Waila;after:BuildCraft|Transport@[7.0.3,);after:BuildCraft|Silicon@[7.0.3,)")
 public class WailaAddonBC
 {
 	public static boolean enabled;

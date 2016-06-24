@@ -14,14 +14,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import pome.waila.bcaddon.util.TimeHolder;
 
 public class HUDProviderProgrammingTable implements IWailaDataProvider
 {
-	private TimeHolder timeHolder = new TimeHolder(0,0);
-
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
@@ -76,7 +74,7 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 		{
 			TileProgrammingTable table = (TileProgrammingTable)tile;
 
-			double estTime = predictRemTime(table,timeHolder);
+			double estTime = predictRemTime(table);
 			nbt.setDouble("estTime", estTime);
 
 			boolean canCrafting = Invoke(canCraft,table);
@@ -108,5 +106,10 @@ public class HUDProviderProgrammingTable implements IWailaDataProvider
 			}
 		}
 		return nbt;
+	}
+	@Override
+	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world,BlockPos pos)
+	{
+		return getNBTData(player, tile, tag, world, pos.getX(), pos.getY(), pos.getZ());
 	}
 }

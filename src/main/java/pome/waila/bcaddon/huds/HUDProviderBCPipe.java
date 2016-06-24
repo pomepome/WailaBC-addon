@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class HUDProviderBCPipe implements IWailaDataProvider
@@ -72,10 +73,15 @@ public class HUDProviderBCPipe implements IWailaDataProvider
 		return defaulttip;
 	}
 
-	@Override
 	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound nbt, World world, int x,int y, int z)
 	{
 		return null;
+	}
+
+	@Override
+	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world,BlockPos pos)
+	{
+		return getNBTData(player, tile, tag, world, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 }

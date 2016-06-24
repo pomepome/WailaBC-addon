@@ -6,22 +6,20 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.Loader;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
+import net.minecraftforge.fml.common.Loader;
 import pome.waila.bcaddon.modules.BCAdvancedCraftingTableModule;
 import pome.waila.bcaddon.modules.BCAssemblyTableModule;
 import pome.waila.bcaddon.modules.BCAutoWorkbenchModule;
 import pome.waila.bcaddon.modules.BCIntegrationTableModule;
 import pome.waila.bcaddon.modules.BCProgrammingTableModule;
-import pome.waila.bcaddon.modules.BCTransportModule;
 import pome.waila.bcaddon.util.ProviderTypes;
 
 public class AddonManager
 {
 	public static final Logger log = LogManager.getLogger("WailaAddonBC|AddonManager");
 
-	public static List<Class<? extends IAddon>> registeredClasses = new ArrayList<Class<? extends IAddon>>();
 	public static List<IAddon> addonList = new ArrayList<IAddon>();
 	public static List<Class<? extends IAddon>> loadedAddons = new ArrayList<Class<? extends IAddon>>();
 
@@ -29,12 +27,7 @@ public class AddonManager
 	{
 		if(addon == null){ return; }
 		Class<? extends IAddon> clazz = addon.getClass();
-		if(!registeredClasses.contains(clazz))
-		{
-			registeredClasses.add(clazz);
-			addonList.add(addon);
-		}
-		else
+		if(loadedAddons.contains(clazz))
 		{
 			log.info("stopped loading module \""+addon.getName() + "\" because it has already registered.");
 			return;
@@ -72,6 +65,7 @@ public class AddonManager
 			registrar.registerNBTProvider(dataProv, classTile);
 		}
 		loadedAddons.add(clazz);
+		addonList.add(addon);
 		log.info("AddonManager has installed module \""+addon.getName()+"\" successfully.");
 	}
 
@@ -82,7 +76,7 @@ public class AddonManager
 		register(new BCAutoWorkbenchModule());
 		register(new BCIntegrationTableModule());
 		register(new BCProgrammingTableModule());
-		register(new BCTransportModule());
+		//register(new BCTransportModule());
 	}
 
 	public static boolean isLoaded(Class<? extends IAddon> clazz)

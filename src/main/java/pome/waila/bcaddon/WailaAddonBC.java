@@ -5,17 +5,17 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import pome.waila.bcaddon.debugger.CommandDebug;
 import pome.waila.bcaddon.ploxies.CommonProxy;
 
-@Mod(modid="WailaAddonBC",name="WailaAddonBC",version = "1.0.5",dependencies = "required-after:Waila;after:BuildCraft|Transport@[7.0.3,);after:BuildCraft|Silicon@[7.0.3,)")
+@Mod(modid="WailaAddonBC",name="WailaAddonBC",version = "1.0.0",dependencies = "required-after:Waila;after:BuildCraft|Transport@[7.0.3,);after:BuildCraft|Silicon@[7.0.3,)")
 public class WailaAddonBC
 {
 	public static boolean enabled;

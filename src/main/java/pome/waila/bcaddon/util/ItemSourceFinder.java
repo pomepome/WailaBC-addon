@@ -5,10 +5,11 @@ import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class ItemSourceFinder
 {
@@ -19,16 +20,16 @@ public class ItemSourceFinder
 		{
 			return "NULL";
 		}
-		String resource = GameData.getItemRegistry().getNameForObject(stack.getItem()).split(":")[0];
+		ResourceLocation resource = GameData.getItemRegistry().getNameForObject(stack.getItem());
 		logger.info("resource☆"+ resource);
 		ModContainer mod = getModContainer(resource);
 		return mod != null ? mod.getName() : "Minecraft";
 	}
-	public static ModContainer getModContainer(String modId)
+	public static ModContainer getModContainer(ResourceLocation location)
 	{
 		for(ModContainer mod : Loader.instance().getModList())
 		{
-			if(modId.toLowerCase(Locale.US) == mod.getModId().toLowerCase(Locale.US))
+			if(location.getResourceDomain().toLowerCase(Locale.US) == mod.getModId().toLowerCase(Locale.US))
 			{
 				return mod;
 			}

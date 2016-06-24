@@ -24,10 +24,12 @@ public class Utils
 	public static final String timeString = "hud.time";
 	public static final String expString = "hud.exp";
 
-	public static double predictRemTime(TileLaserTableBase table,TimeHolder timeHolder)
+	public static double predictRemTime(TileLaserTableBase table)
 	{
 		try
 		{
+			TimeHolder timeHolder = TimeHolderManager.getTimeHolder(table);
+
 			int energyCost = Invoke(getRequiredEnergy, table);//table.getRequiredEnergy();
 			int currentEnergy = Invoke(getEnergy, table);//table.getEnergy();
 			long lastMillisec = 0;
@@ -78,7 +80,7 @@ public class Utils
 		{
 			return "UNKNOWN";
 		}
-		RedstoneBoardNBT rbNBT = RedstoneBoardRegistry.instance.getRedstoneBoard(stack.stackTagCompound);
+		RedstoneBoardNBT rbNBT = RedstoneBoardRegistry.instance.getRedstoneBoard(stack.getTagCompound());
 		if(rbNBT == null)
 		{
 			return "UNKNOWN";

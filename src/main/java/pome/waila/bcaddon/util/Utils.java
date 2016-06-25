@@ -57,7 +57,7 @@ public class Utils
 			timeHolder.setValue(System.currentTimeMillis(),currentEnergy);
 			if(deltaTime == 0 || deltaFlow == 0)
 			{
-				return 0;
+				return Double.POSITIVE_INFINITY;
 			}
 			return (double)toFlow / (deltaFlow / deltaTime);
 		}

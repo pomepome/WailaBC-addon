@@ -24,10 +24,12 @@ public class Utils
 	public static final String timeString = "hud.time";
 	public static final String expString = "hud.exp";
 
-	public static double predictRemTime(TileLaserTableBase table,TimeHolder timeHolder)
+	public static double predictRemTime(TileLaserTableBase table)
 	{
 		try
 		{
+			TimeHolder timeHolder = TimeHolderManager.getTimeHolder(table);
+
 			int energyCost = Invoke(getRequiredEnergy, table);//table.getRequiredEnergy();
 			int currentEnergy = Invoke(getEnergy, table);//table.getEnergy();
 			long lastMillisec = 0;
@@ -55,7 +57,7 @@ public class Utils
 			timeHolder.setValue(System.currentTimeMillis(),currentEnergy);
 			if(deltaTime == 0 || deltaFlow == 0)
 			{
-				return 0;
+				return Double.POSITIVE_INFINITY;
 			}
 			return (double)toFlow / (deltaFlow / deltaTime);
 		}

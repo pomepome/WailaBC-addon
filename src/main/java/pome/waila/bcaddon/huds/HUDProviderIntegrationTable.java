@@ -21,12 +21,9 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import pome.waila.bcaddon.util.TimeHolder;
 
 public class HUDProviderIntegrationTable implements IWailaDataProvider
 {
-
-	private TimeHolder timeHolder = new TimeHolder(0,0);;
 
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
@@ -91,7 +88,7 @@ public class HUDProviderIntegrationTable implements IWailaDataProvider
 		{
 			TileIntegrationTable table = (TileIntegrationTable)tile;
 
-			double estTime = predictRemTime(table,timeHolder);
+			double estTime = predictRemTime(table);
 			nbt.setDouble("estTime", estTime);
 
 			boolean canCrafting = Invoke(canCraft,table);
